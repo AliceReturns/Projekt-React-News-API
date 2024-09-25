@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import NewsCard from "./components/News";
 
 interface Articles {
-  source: { name: string }; // Source ist ein Objekt mit einem Namen
+  source: { name: string };
   author: string;
   title: string;
   description: string;
