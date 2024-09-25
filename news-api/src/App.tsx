@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import NewsCard from "./components/News";
 
 interface Articles {
@@ -12,36 +12,32 @@ interface Articles {
 }
 
 function App() {
-  const [articles, setArticles] = useState<Articles[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>(""); // Zustand für die Suche
   const [filteredArticles, setFilteredArticles] = useState<Articles[]>([]);
-
-  useEffect(() => {
-    fetch(
-      "https://newsapi.org/v2/everything?q=apple&from=2024-09-24&to=2024-09-24&sortBy=popularity&apiKey=95cf379ce4ea4644ac321191a145f41f"
-    )
-      .then((response) => response.json())
-      .then((json) => {
-        setArticles(json.articles);
-      })
-      .catch((err) => {
-        console.error(err);
-      });
-  }, []);
+  const [selectedLanguage, setSelectedLanguage] = useState<string>("de"); // Standardmäßig deutscher Sprachfilter
 
   // Funktion, um den Suchbegriff zu speichern
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
   };
 
-  // Funktion, um die Artikel basierend auf der Suchanfrage zu filtern
+  // Funktion, um die Sprache zu speichern
+  const handleLanguageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedLanguage(e.target.value);
+  };
+
+  // Funktion, um die Artikel basierend auf der Suchanfrage und der Sprache zu holen
   const handleSearchClick = () => {
-    const filtered = articles.filter(
-      (article) =>
-        article.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        article.description?.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-    setFilteredArticles(filtered); // Gefilterte Artikel im Zustand speichern
+    const url = `https://newsapi.org/v2/everything?q=${searchTerm}&language=${selectedLanguage}&apiKey=95cf379ce4ea4644ac321191a145f41f`;
+
+    fetch(url)
+      .then((response) => response.json())
+      .then((json) => {
+        setFilteredArticles(json.articles || []); // Gefilterte Artikel im Zustand speichern
+      })
+      .catch((err) => {
+        console.error(err);
+      });
   };
 
   return (
@@ -56,12 +52,16 @@ function App() {
           onChange={handleSearchChange} // Suche bei jeder Änderung
         />
 
-        <select name="LanguageSelection" id="Language">
+        <select
+          name="LanguageSelection"
+          id="Language"
+          onChange={handleLanguageChange}
+        >
           <option value="" disabled selected hidden>
             Bitte Sprache auswählen...
           </option>
-          <option value="1">German</option>
-          <option value="2">English</option>
+          <option value="de">German</option>
+          <option value="en">English</option>
         </select>
         <button id="SearchBtn" onClick={handleSearchClick}>
           SEARCH
