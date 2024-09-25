@@ -13,6 +13,8 @@ interface Articles {
 
 function App() {
   const [articles, setArticles] = useState<Articles[]>([]);
+  const [searchTerm, setSearchTerm] = useState<string>(""); // Zustand für die Suche
+  const [filteredArticles, setFilteredArticles] = useState<Articles[]>([]);
 
   useEffect(() => {
     fetch(
@@ -27,25 +29,59 @@ function App() {
       });
   }, []);
 
+  // Funktion, um den Suchbegriff zu speichern
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(e.target.value);
+  };
+
+  // Funktion, um die Artikel basierend auf der Suchanfrage zu filtern
+  const handleSearchClick = () => {
+    const filtered = articles.filter(
+      (article) =>
+        article.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        article.description?.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    setFilteredArticles(filtered); // Gefilterte Artikel im Zustand speichern
+  };
+
   return (
     <div>
       <h1>Breaking News</h1>
-      {articles.length > 0 ? (
-        articles.map((article, index) => (
-          <NewsCard
-            key={index}
-            source={article.source.name}
-            author={article.author}
-            title={article.title}
-            description={article.description}
-            url={article.url}
-            publishedAt={article.publishedAt}
-            content={article.content}
-          />
-        ))
-      ) : (
-        <p>Laden...</p>
-      )}
+      <div className="Suchoptionen">
+        <input
+          id="SearchArticle"
+          type="search"
+          placeholder="Type to search ..."
+          value={searchTerm} // Der Wert des Inputs wird vom Zustand gesteuert
+          onChange={handleSearchChange} // Suche bei jeder Änderung
+        />
+
+        <select name="LanguageSelection" id="Language">
+          <option value="" disabled selected hidden>
+            Bitte Sprache auswählen...
+          </option>
+          <option value="1">German</option>
+          <option value="2">English</option>
+        </select>
+        <button id="SearchBtn" onClick={handleSearchClick}>
+          SEARCH
+        </button>
+      </div>
+      {/* Zeigt die gefilterten Artikel an */}
+      {filteredArticles.length > 0
+        ? filteredArticles.map((article, index) => (
+            <NewsCard
+              key={index}
+              source={article.source.name}
+              author={article.author}
+              title={article.title}
+              description={article.description}
+              url={article.url}
+              publishedAt={article.publishedAt}
+              content={article.content}
+            />
+          ))
+        : null}
     </div>
   );
 }

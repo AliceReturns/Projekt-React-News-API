@@ -35,17 +35,3 @@ function NewsCard(props: NewsProps) {
 }
 
 export default NewsCard;
-
-/* //       <div className="Suchoptionen">
-//         <input id="SearchArticle" type="search" />
-//         <select name="LanguageSelection" id="Language">
-//           <option value="" disabled selected hidden>
-//             Bitte Sprache auswählen...
-//           </option>
-//           <option value="1">German</option>
-//           <option value="2">English</option>
-//         </select>
-//         <button id="SearchBtn">SEARCH</button>
-//       </div>
-//     </div>
-    ); */
