@@ -1,5 +1,5 @@
 interface NewsProps {
-  source: { name: string };
+  source: string;
   name: string;
   author: string;
   title: string;

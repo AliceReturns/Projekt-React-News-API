@@ -73,6 +73,7 @@ function App() {
             <NewsCard
               key={index}
               source={article.source.name}
+              name={article.source.name}
               author={article.author}
               title={article.title}
               description={article.description}
